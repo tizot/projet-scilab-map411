@@ -1,9 +1,29 @@
 \section{Méthode de \textsc{Horn} et \textsc{Schunk}}
 
-On adopte une approche variationnelle du problème, et on se propose de déterminer le flot $h = (u,v)$ qui minimise l'énergie suivante sur $\Omega = \interff{0}{1}^2$:
+On fait l'hypothèse que le flot $h$ est régulier (au moins de classe $\mathscr{C}^2$ sur $\Omega = \interff{0}{1}^2$). On adopte une approche variationnelle du problème, et on se propose de déterminer le flot $h = (u,v)$ qui minimise l'énergie suivante sur $\Omega$:
 \[ J(u,v) = \int_{\Omega} (I_xu + I_yv + I_t)^2 + \alpha^2\left( \abs{\nabla u}^2 + \abs{\nabla v}^2 \right) \]
-où $\alpha$ est une constante réelle, et $I_\mu$ est la dérivée de $I$ par rapport à $\mu \in \lbrace x, y, t \rbrace$.
+où $\alpha$ est une constante réelle, et $I_\mu$ est la dérivée de $I$ par rapport à $\mu \in \lbrace x, y, t \rbrace$.\\
+Si $\alpha = 0$, l'énergie est nulle quel que soit le flot $h$, donc la formulation variationnelle ne nous apprend rien...
 
 \begin{enumerate}[questions]
-\item Le minimum existe...
+\item On suppose que le minimum existe dans un espace plus grand que $\mathscr{C}^2(\Omega)$. \\
+JE NE SAIS PAS COMMENT MONTRER L'UNICITE...................
+
+\item On note $\bar{h} = (\bar{u}, \bar{v})$ le flot minimisant. Pour tout $u$ on a donc:
+\begin{align*}
+J(\bar{u}+u, \bar{v}) &= \int_{\Omega} (I_x(\bar{u}+u) + I_y\bar{v} + I_t)^2 + \alpha^2\left( \abs{\nabla (\bar{u}+u)}^2 + \abs{\nabla \bar{v}}^2 \right) \\
+&= J(\bar{u}+u, \bar{v}) + \int_\Omega \left[2 I_x u(I_x\bar{u} + I_y\bar{v} + I_t) + 2\alpha^2 \nabla\bar{u} \cdot \nabla u\right] + \alpha^2 \int_\Omega \abs{\nabla u}^2
+\end{align*}
+Le terme central est la différentielle de $J$ en $\bar{h}$ évaluée en $(u, 0)$, donc comme $\bar{h}$ minimise $J$, on peut affirmer que:
+\[ \forall u, \qquad \int_\Omega \left[I_x u(I_x\bar{u} + I_y\bar{v} + I_t) + \alpha^2 \nabla\bar{u} \cdot \nabla u\right] = 0 \]
+On peut en particulier choisir $u$ dans $\mathscr{C}^\infty(\Omega)$. Par application de la formule de \textsc{Green-Riemann}, on obtient:
+\[ \forall u \in \mathscr{C}^\infty(\Omega), \qquad \int_\Omega u\left[I_x(I_x\bar{u} + I_y\bar{v} + I_t) - \alpha^2 \Delta\bar{u} \right] = 0 \]
+Le lemme 3.1.7 du cours permet d'affirmer alors que:
+\[ I_x(I_x\bar{u} + I_y\bar{v} + I_t) - \alpha^2 \Delta\bar{u} = 0 \quad \text{sur } \Omega \]
+
+On tient le même raisonnement en évaluant la différentielle de $J$ au point $\bar{h}$ calculée au point $(0, v)$. On obtient donc le système d'équations suivant:
+\begin{gather}
+I_x^2 u + I_xI_y v = \alpha^2 \Delta u - I_xI_t \label{eq:uDomin} \\
+I_xI_y u + I_y^2 v = \alpha^2 \Delta v - I_yI_t \label{eq:vDomin}
+\end{gather}
 \end{enumerate}
