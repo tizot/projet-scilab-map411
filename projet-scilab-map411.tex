@@ -1,0 +1,70 @@
+\documentclass[12pt]{scrartcl}
+
+\KOMAoptions{paper=a4, DIV=14}
+
+% Extension de capacités
+\usepackage{etex}
+
+% Francisation du document
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Police de caractères
+\usepackage{lmodern}
+
+% Listes d'énumération
+\usepackage{enumitem}
+
+% Mathématiques
+\usepackage{mathtools}
+
+% Références croisées
+\usepackage[french]{varioref}
+
+% Couleurs et boites
+\usepackage[x11names]{xcolor}
+\usepackage{fancybox}
+
+% Francisation du document, le retour
+\usepackage[frenchb]{babel}
+
+% Date
+\usepackage{datetime}
+\newdate{date}{14}{01}{2015}
+
+% Mes fonctions
+\usepackage[ensemblesGras]{mesfonctions}
+
+% Propriétés hypertexte
+\usepackage[pdftex]{hyperref}
+\hypersetup{%
+  pdfauthor = {Bruneau Basile, Masset Camille},%
+  pdftitle = {Un calcul de flot optique},%
+  pdfsubject = {Projet de simulation - MAP411},%
+  pdfkeywords = {},%
+  pdfcreator = {pdfLaTeX},%
+  pdfproducer = {pdfLaTeX},%
+  bookmarksnumbered = true,%
+  pdfstartview = FitH,%
+  pdfpagelayout = OneColumn,%
+  colorlinks = false,%
+  pdfborder = {0 0 0}%
+}
+
+\title{Un calcul de flot optique}
+\author{\textsc{Bruneau} Basile \and \textsc{Masset} Camille}
+\date{\displaydate{date}}
+
+
+\begin{document}
+\renewcommand{\labelitemi}{\starredbullet}
+\setlength{\parskip}{1em}
+
+\maketitle
+
+\input{parts/section1}
+
+
+
+
+\end{document}
