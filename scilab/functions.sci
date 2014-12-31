@@ -30,16 +30,16 @@ function [derX, derY, derT] = derivees(I1, I2)
     // dérivées au bord (condition de Neumann)
     // à vérifier
     derX(N, 1:N-1) = (I1(N, 2:N) - I1(N, 1:N-1) + 0 + I2(N, 2:N) - I2(N, 1:N-1) + 0)/4;
-    derX(1:N-1, N) = (0 + 0 + 0 + 0)/4;
-    derX(N, N) = 0;
+    // derX(1:N-1, N) = (0 + 0 + 0 + 0)/4;
+    // derX(N, N) = 0;
     
-    derY(N, 1:N-1) = (0 + 0 + 0 + 0)/4;
+    // derY(N, 1:N-1) = (0 + 0 + 0 + 0)/4;
     derY(1:N-1, N) = (I1(2:N, N) - I1(1:N-1, N) + 0 + I2(2:N, N) - I2(1:N-1, N) + 0)/4;
-    derY(N, N) = 0;
+    // derY(N, N) = 0;
     
-    derT(N, 1:N-1) = (I2(N, 1:N-1) - I1(N, 1:N-1) + 0 + 0 + I2(N, 2:N) - I1(N, 2:N))/4;
-    derT(1:N-1, N) = (I2(1:N-1, N) - I1(1:N-1, N) + I2(2:N, N) - I1(2:N, N) + 0 + 0)/4;
-    derT(N, N) = 0;
+    derT(N, 1:N-1) = (I2(N, 1:N-1) - I1(N, 1:N-1) + I2(N, 2:N) - I1(N, 2:N))/2;
+    derT(1:N-1, N) = (I2(1:N-1, N) - I1(1:N-1, N) + I2(2:N, N) - I1(2:N, N))/2;
+    derT(N, N) = I2(N, N) - I1(N, N);
 endfunction
 
 function Umoy = moyenneMat(U)
