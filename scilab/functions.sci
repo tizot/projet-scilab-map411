@@ -41,3 +41,24 @@ function [derX, derY, derT] = derivees(I1, I2)
     derT(1:N-1, N) = (I2(1:N-1, N) - I1(1:N-1, N) + I2(2:N, N) - I1(2:N, N) + 0 + 0)/4;
     derT(N, N) = 0;
 endfunction
+
+function Umoy = moyenneMat(U)
+    [n,p] = size(U); // U a n lignes et p colonnes (on supposera n,p > 2)
+    Umoy = zeros(U);
+    
+    // on pondère les éléments qui ont un côté en commun 2 fois plus que les éléments qui n'ont qu'un coin en commun
+    // éléments intérieurs
+    Umoy(2:n-1, 2:p-1) = 1/6 * (U(1:n-2, 2:p-1) + U(3:n, 2:p-1) + U(2:n-1, 3:p) + U(2:n-1, 1:p-2)) + 1/12 * (U(1:n-2, 1:p-2) + U(1:n-2, 3:p) + U(3:n, 1:p-2) + U(3:n, 3:p));
+    
+    // éléments aux bords
+    Umoy(1, 2:p-1) = 1/4 * (U(1, 1:p-2) + U(1, 3:p) + U(2, 2:p-1)) + 1/8 * (U(2, 1:p-2) + U(2, 3:p)); // ligne 1
+    Umoy(n, 2:p-1) = 1/4 * (U(n, 1:p-2) + U(n, 3:p) + U(n-1, 2:p-1)) + 1/8 * (U(n-1, 1:p-2) + U(n-1, 3:p)); // ligne n
+    Umoy(2:n-1, 1) = 1/4 * (U(1:n-2, 1) + U(3:n, 1) + U(2:n-1, 2)) + 1/8 * (U(1:n-2, 2) + U(3:n, 2)); // colonne 1
+    Umoy(2:n-1, p) = 1/4 * (U(1:n-2, p) + U(3:n, p) + U(2:n-1, p-1)) + 1/8 * (U(1:n-2, p-1) + U(3:n, p-1)); // colonne p
+    
+    // éléments aux coins
+    Umoy(1, 1) = 2/5 * (U(1, 2) + U(2, 1)) + 1/5 * U(2, 2);
+    Umoy(1, p) = 2/5 * (U(1, p-1) + U(2, p)) + 1/5 * U(2, p-1);
+    Umoy(n, 1) = 2/5 * (U(n-1, 1) + U(n, 2)) + 1/5 * U(n-1, 2);
+    Umoy(n, p) = 2/5 * (U(n-1, p) + U(n, p-1)) + 1/5 * U(n-1, p-1);
+endfunction

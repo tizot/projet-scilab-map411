@@ -13,7 +13,5 @@ exec('functions.sci', -1);
 I1 = rand(10, 10, "normal");
 I2 = rand(10, 10, "normal");
 
-[derX, derY, derT] = derivees(I1, I2);
-derX
-derY
-derT
+Umoy = moyenneMat(I1);
+I1
