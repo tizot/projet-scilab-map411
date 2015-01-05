@@ -62,3 +62,11 @@ function Umoy = moyenneMat(U)
     Umoy(n, 1) = 2/5 * (U(n-1, 1) + U(n, 2)) + 1/5 * U(n-1, 2);
     Umoy(n, p) = 2/5 * (U(n-1, p) + U(n, p-1)) + 1/5 * U(n-1, p-1);
 endfunction
+
+function [Unp, Vnp] = iter(Un, Vn, Ix, Iy, It, alpha)
+    UnMoy = Umoy(Un);
+    VnMoy = Umoy(Vn);
+    frac = (Ix .* UnMoy + Iy .* VnMoy + It) ./ (alpha^2 + Ix .* Ix + Iy .* Iy);
+    Unp = UnMoy - Ix .* frac;
+    Vnp = VnMoy - Iy .* frac;
+endfunction
