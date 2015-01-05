@@ -1,0 +1,497 @@
+%%% Mes fonctions (courantes, maths, ...)
+
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesPackage{mesfonctions}
+              [2010/03/28 v. 2.1
+              Macros et fonctions personnalisées]
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																								%
+%										 Packages requis										%
+%																								%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\RequirePackage{amsmath}
+\RequirePackage{esvect}
+\RequirePackage{ifthen}
+%\RequirePackage[x11names]{xcolor}
+\RequirePackage{xargs}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																								%
+%									Déclarations des options									%
+%																								%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Ensembles de nombres en gras au lieu du ajouré
+	% création d'un booléen négatif pour le gras
+	\newboolean{isEnsemblesGras}
+	\setboolean{isEnsemblesGras}{false}
+	% création d'une option qui active le gras
+	\DeclareOption{ensemblesGras}{\setboolean{isEnsemblesGras}{true}}
+
+\ProcessOptions
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%																								%
+%									 Liste des commandes										%
+%																								%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Pour avoir des notes de bas de page "correctement françaises"
+\AddThinSpaceBeforeFootnotes
+\FrenchFootnotes
+
+% Pour écrire des fractions en oblique, utiliser \ofr
+\newcommand*{\ofr}[2]{%
+	\raisebox{0ex}{$#1$}\negthinspace\slash
+	\raisebox{-.5ex}{$#2$}}
+
+% Quelques couleurs pour les dessins (et autres ?)
+\definecolor{orange}{rgb}{0.589999,0.269997,0.080004}
+\definecolor{or}{rgb}{1,0.843104,0}
+\definecolor{orc}{rgb}{1,0.943104,0}
+\definecolor{0.8white}{rgb}{0.8,0.8,0.8}
+\definecolor{bleu_ciel}{rgb}{0.635286,0.9693528,1}
+\definecolor{bleu_m}{rgb}{0.423524,0.6462352,0.7372784}
+\definecolor{bleu_f}{rgb}{0.211762,0.3231176,0.3686392}
+\definecolor{0.6white}{rgb}{0.6,0.6,0.6}
+\definecolor{0.4white}{rgb}{0.4,0.4,0.4}
+\definecolor{0.8white}{rgb}{0.8,0.8,0.8}
+\definecolor{0.2white}{rgb}{0.2,0.2,0.2}
+\definecolor{0.9white}{rgb}{0.9,0.9,0.9}
+\definecolor{bleu}{rgb}{0.529405,0.807794,1}
+\definecolor{rose}{rgb}{1.0, 0.752907, 0.796106}
+\definecolor{0.9white}{rgb}{0.9,0.9,0.9}
+\definecolor{vert_e}{rgb}{0,0.790002,0.340007}
+\definecolor{vert_fonce}{rgb}{0,0.392193,0}
+
+% pour avoir des majuscules droites :
+\DeclareMathSymbol{A}{\mathalpha}{operators}{`A}%
+\DeclareMathSymbol{B}{\mathalpha}{operators}{`B}%
+\DeclareMathSymbol{C}{\mathalpha}{operators}{`C}%
+\DeclareMathSymbol{D}{\mathalpha}{operators}{`D}%
+\DeclareMathSymbol{E}{\mathalpha}{operators}{`E}%
+\DeclareMathSymbol{F}{\mathalpha}{operators}{`F}%
+\DeclareMathSymbol{G}{\mathalpha}{operators}{`G}%
+\DeclareMathSymbol{H}{\mathalpha}{operators}{`H}%
+\DeclareMathSymbol{I}{\mathalpha}{operators}{`I}%
+\DeclareMathSymbol{J}{\mathalpha}{operators}{`J}%
+\DeclareMathSymbol{K}{\mathalpha}{operators}{`K}%
+\DeclareMathSymbol{L}{\mathalpha}{operators}{`L}%
+\DeclareMathSymbol{M}{\mathalpha}{operators}{`M}%
+\DeclareMathSymbol{N}{\mathalpha}{operators}{`N}%
+\DeclareMathSymbol{O}{\mathalpha}{operators}{`O}%
+\DeclareMathSymbol{P}{\mathalpha}{operators}{`P}%
+\DeclareMathSymbol{Q}{\mathalpha}{operators}{`Q}%
+\DeclareMathSymbol{R}{\mathalpha}{operators}{`R}%
+\DeclareMathSymbol{S}{\mathalpha}{operators}{`S}%
+\DeclareMathSymbol{T}{\mathalpha}{operators}{`T}%
+\DeclareMathSymbol{U}{\mathalpha}{operators}{`U}%
+\DeclareMathSymbol{V}{\mathalpha}{operators}{`V}%
+\DeclareMathSymbol{W}{\mathalpha}{operators}{`W}%
+\DeclareMathSymbol{X}{\mathalpha}{operators}{`X}%
+\DeclareMathSymbol{Y}{\mathalpha}{operators}{`Y}%
+\DeclareMathSymbol{Z}{\mathalpha}{operators}{`Z}%
+
+% Pour insérer trois petites étoiles joliement placées, comme des les romans, utiliser \etoiles
+\newcommand{\etoiles}{\begin{center}\begin{tabular}{ccc}
+*& &*\\
+ &*& 
+\end{tabular}
+\end{center}
+}
+
+% Commande pour citations en début de chapitre/page : \epigraphe{Texte}{Auteur}{Livre}
+\newcommand{\epigraphe}[3]{
+	\begin{flushright}
+		\begin{tabular}{@{}p{6cm}@{}}
+			{\raggedleft \itshape #1\par}\\
+			{\raggedleft \textsc{#2}, #3\par}
+		\end{tabular}
+	\end{flushright}}
+
+% Pour insérer mon adresse mail en lien hypertexte.
+\newcommand*{\mail}{\url{camille.masset@free.fr}}
+
+% Pour insérer un titre avec un encadré ombré, de largeur la page.
+% \titreombre{largeur}{titre}
+\newcommandx{\titreombre}[2][1={0.95\textwidth}]%
+{\shadowbox{\parbox[c][1.5\height]{#1}{\begin{center}#2\end{center}}}}
+
+% Pour insérer un nouvel exercice (avec compteur automatique)
+\newcounter{numeroexo}
+\newcommand{\exo}{\vspace{1cm}\par\noindent\stepcounter{numeroexo}
+\hspace{-.25cm}{\textbf{Exercice \arabic{numeroexo}}}\quad}
+
+\newcommand{\exob}{\vspace{1cm}\par\noindent\stepcounter{numeroexo}
+\hspace{-.25cm}\color{black}\shadowbox{\color{black}\textbf{Exercice \arabic{numeroexo}}}\color{black}}
+
+% Pour insérer l'expression "repère orthonormé"
+\newcommand*{\ron}{repère orthonormé}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%                                                               %%%%%%%%
+%%%%%%%%                    Fonctions mathématiques                    %%%%%%%%
+%%%%%%%%                                                               %%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%
+% Symboles divers %
+%%%%%%%%%%%%%%%%%%%
+
+
+% Pour avoir un point-virgule {;} avec un peu d'espace autour (pour les intervalles), utiliser \pv
+\newcommand*{\pv}{\ensuremath{\nonscript\, ; }}
+
+
+% Pour la notations scientifiques, utiliser \Sc
+\newcommand*{\Sc}[2]{%
+	\ensuremath{%
+	#1\cdot 10^{#2}}}
+
+% Constante imaginaire
+\newcommand*{\I}{\ensuremath{\mathrm{i}}}
+% Nombre exponentiel (e^1)
+\newcommand*{\E}{\ensuremath{\mathrm{e}}}
+% "d" de la dérivation
+\ifthenelse{\isundefined{\D}}{%
+\newcommand*{\D}{\ensuremath{\, \mathrm{d}}}%
+}
+
+% Pour les ensembles de nombres :
+\ifthenelse{\boolean{isEnsemblesGras}}%
+{%
+	\newcommand*{\naturels}{\ensuremath{\mathbf{N}}}%
+	\newcommand*{\relatifs}{\ensuremath{\mathbf{Z}}}%
+	\newcommand*{\decimaux}{\ensuremath{\mathbf{D}}}%
+	\newcommand*{\rationnels}{\ensuremath{\mathbf{Q}}}%
+	\newcommand*{\reels}{\ensuremath{\mathbf{R}}}%
+	\newcommand*{\complexes}{\ensuremath{\mathbf{C}}}%
+	\newcommand*{\imaginaires}{\ensuremath{\mathrm{i}\mathbf{R}}} % ensemble des imaginaires purs
+}
+{	
+	\newcommand*{\naturels}{\ensuremath{\mathbb{N}}}%
+	\newcommand*{\relatifs}{\ensuremath{\mathbb{Z}}}%
+	\newcommand*{\decimaux}{\ensuremath{\mathbb{D}}}%
+	\newcommand*{\rationnels}{\ensuremath{\mathbb{Q}}}%
+	\newcommand*{\reels}{\ensuremath{\mathbb{R}}}%
+	\newcommand*{\complexes}{\ensuremath{\mathbb{C}}}%
+	\newcommand*{\imaginaires}{\ensuremath{\mathrm{i}\mathbb{R}}} % ensemble des imaginaires purs
+}
+
+% Pour un signe \parallel (//) français
+\renewcommand*{\parallel}{\mbox{\slash\negthickspace\slash}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Fonctions de base (sin, ln, PGCD, ...) %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% fonction opérateur \operateur{fonction}{gauche}{argument}{droite}
+\newcommand{\operateur}[4]{\mathchoice%
+	{#1{\left#2 #3 \right#4}}% mode \displaystyle
+	{#1{\mathopen{#2} #3 \mathclose{#4}}}% mode \textstyle
+	{#1{\mathopen{#2} #3 \mathclose{#4}}}% mode \scriptstyle
+	{#1{\mathopen{#2} #3 \mathclose{#4}}}% mode \scriptscriptstyle
+}
+
+% cardinal d'un ensemble
+\DeclareMathOperator{\card}{Card}
+
+% identité
+\newcommand*{\identite}[1][]{\mathrm{Id}_{(#1)}}
+
+% barycentre de plusieurs points
+\DeclareMathOperator{\BARY}{bary}
+\newcommand*{\bary}[1]{\operateur{\BARY}{\lbrace}{#1}{\rbrace}}
+
+%%% Fonctions circulaires %%%
+
+% Fonction sinus avec parenthèses
+\newcommand*{\sinp}[1]{\operateur{\sin}{(}{#1}{)}}
+
+% Fonction cosinus avec parenthèses
+\newcommand*{\cosp}[1]{\operateur{\cos}{(}{#1}{)}}
+
+% Fonction tangente avec parenthèses
+\newcommand*{\tanp}[1]{\operateur{\tan}{(}{#1}{)}}
+
+% Fonction cotangente avec parenthèses
+\DeclareMathOperator{\cotan}{cotan}
+\newcommand*{\cotanp}[1]{\operateur{\cotan}{(}{#1}{)}}
+
+% Fonction sécante avec parenthèses
+\newcommand*{\secp}[1]{\operateur{\sec}{(}{#1}{)}}
+
+% Fonction cosécante avec parenthèses
+\DeclareMathOperator{\cosec}{cosec}
+\newcommand*{\cosecp}[1]{\operateur{\cosec}{(}{#1}{)}}
+
+%%% Fonctions hyperboliques %%%
+% Fonction sinus hyperbolique avec parenthèses
+\DeclareMathOperator{\sh}{sh}
+\newcommand*{\shp}[1]{\operateur{\sh}{(}{#1}{)}}
+
+% Fonction cosinus hyperbolique avec parenthèses
+\DeclareMathOperator{\ch}{ch}
+\newcommand*{\chp}[1]{\operateur{\ch}{(}{#1}{)}}
+
+% Fonction tangente hyperbolique avec parenthèses
+\DeclareMathOperator{\tnh}{th}
+\newcommand*{\thp}[1]{\operateur{\tnh}{(}{#1}{)}}
+
+% Fonction cotangente hyperbolique avec parenthèses
+\newcommand*{\cothp}[1]{\operateur{\coth}{(}{#1}{)}}
+
+%%% Fonctions hyperboliques réciproques %%%
+
+% Fonction argsinus hyperbolique avec parenthèses
+\DeclareMathOperator{\argsh}{argsh}
+\newcommand*{\argshp}[1]{\operateur{\argsh}{(}{#1}{)}}
+
+% Fonction argcosinus hyperbolique avec parenthèses
+\DeclareMathOperator{\argch}{argch}
+\newcommand*{\argchp}[1]{\operateur{\argch}{(}{#1}{)}}
+
+% Fonction argtangente hyperbolique avec parenthèses
+\DeclareMathOperator{\argth}{argth}
+\newcommand*{\argthp}[1]{\operateur{\argth}{(}{#1}{)}}
+
+% Fonction ln avec parenthèses
+\newcommand*{\lnp}[1]{\operateur{\ln}{(}{#1}{)}}
+
+% Fonction log avec parenthèses
+\newcommandx*{\logp}[2][1={}]{\operateur{\log_{#1}}{(}{#2}{)}}
+
+% Fonction PGCD de deux nombres
+\DeclareMathOperator{\pgcd}{PGCD}
+\newcommand*{\PGCD}[2]{\operateur{\pgcd}{(}{#1 \pv #2}{)}}
+
+% Fonction PPCM de deux nombres
+\DeclareMathOperator{\ppcm}{PPCM}
+\newcommand*{\PPCM}[2]{\operateur{\ppcm}{(}{#1 \pv #2}{)}}
+
+% Fonction valeur absolue
+\newcommand*{\abs}[1]{\mathchoice%
+	{\left| #1 \right|}% mode \displaystyle
+	{\mathopen{|} #1 \mathclose{|}}% mode \textstyle
+	{\mathopen{|} #1 \mathclose{|}}% mode \scriptstyle
+	{\mathopen{|} #1 \mathclose{|}}}% mode \scriptscriptstyle
+
+% Fonction modulo
+\newcommand*{\modulo}[1]{\mathchoice%
+	{\; \left[ #1 \right]}%
+	{\; \mathopen{[} #1 \mathclose{]}}%
+	{\; \mathopen{[} #1 \mathclose{]}}%
+	{\; \mathopen{[} #1 \mathclose{]}}}
+
+% Fonction "congru à" (a congru à b modulo n => \congru{a}{b}{n})
+\newcommand*{\congru}[3]{#1 \equiv #2 \modulo{#3}}
+
+% Partie réelle et partie imaginaire d'un nombre complexe
+\DeclareMathOperator{\re}{Re}
+\newcommand*{\RE}[1]{\operateur{\re}{(}{#1}{)}}
+\DeclareMathOperator{\im}{Im}
+\newcommand*{\IM}[1]{\operateur{\im}{(}{#1}{)}}
+
+% Argument d'un nombre complexe (avec parenthèses)
+\newcommand*{\argp}[1]{\operateur{\arg}{(}{#1}{)}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Structures plus importantes %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Coordonnées du plan (points ou vecteurs)
+\newcommand*{\coordonneesPlan}[2]{\mathchoice%
+	{\left( #1 \pv #2 \right)}%
+	{\mathopen{(} #1 \pv #2 \mathclose{)}}%
+	{\mathopen{(} #1 \pv #2 \mathclose{)}}%
+	{\mathopen{(} #1 \pv #2 \mathclose{)}}}
+
+% Coordonnées de l'espace (points ou vecteurs)
+\newcommand*{\coordonneesEspace}[3]{\mathchoice%
+	{\left( #1 \pv #2 \pv #3 \right)}%
+	{\mathopen{(} #1 \pv #2 \pv #3 \mathclose{)}}%
+	{\mathopen{(} #1 \pv #2 \pv #3 \mathclose{)}}%
+	{\mathopen{(} #1 \pv #2 \pv #3 \mathclose{)}}}
+
+% Les intervalles
+\newcommand{\intervalle}[4]{\mathchoice%
+	{\left#1 #2 \mathclose{} \mathpunct{}; #3 \right#4}% mode \displaystyle
+	{\mathopen{#1} #2 \mathclose{} \mathpunct{}; #3 \mathclose{#4}}% mode \textstyle
+	{\mathopen{#1} #2 \mathclose{} \mathpunct{}; #3 \mathclose{#4}}% mode \scriptstyle
+	{\mathopen{#1} #2 \mathclose{} \mathpunct{}; #3 \mathclose{#4}}}% mode \scriptscriptstyle
+	
+	% fermé - fermé
+	\newcommand*{\interff}[2]{\ensuremath{\intervalle{[}{#1}{#2}{]}}}
+	% fermé - ouvert
+	\newcommand*{\interfo}[2]{\ensuremath{\intervalle{[}{#1}{#2}{[}}}
+	% ouvert - fermé
+	\newcommand*{\interof}[2]{\ensuremath{\intervalle{]}{#1}{#2}{]}}}
+	% ouvert - ouvert
+	\newcommand*{\interoo}[2]{\ensuremath{\intervalle{]}{#1}{#2}{[}}}
+
+% Les repères
+	% repère (O;i)
+	\newcommand*{\oiRep}{\mathchoice%
+		{\left( O \pv \vv{\imath} \right)}% mode displaymath
+		{\mathopen{(} O \pv \vv{\imath} \mathclose{)}}% mode textstyle
+		{\mathopen{(} O \pv \vv{\imath} \mathclose{)}}% mode scriptstyle
+		{\mathopen{(} O \pv \vv{\imath} \mathclose{)}}}% mode scriptscriptstyle
+	% repère (O;u)
+	\newcommand*{\ouRep}{\mathchoice%
+		{\left( O \pv \vv{u} \right)}% mode displaymath
+		{\mathopen{(} O \pv \vv{u} \mathclose{)}}% mode textstyle
+		{\mathopen{(} O \pv \vv{u} \mathclose{)}}% mode scriptstyle
+		{\mathopen{(} O \pv \vv{u} \mathclose{)}}}% mode scriptscriptstyle
+	% repère (O;e1)
+	\newcommand*{\oeRep}{\mathchoice%
+		{\left( O \pv \vv{e_1} \right)}% mode displaymath
+		{\mathopen{(} O \pv \vv{e_1} \mathclose{)}}% mode textstyle
+		{\mathopen{(} O \pv \vv{e_1} \mathclose{)}}% mode scriptstyle
+		{\mathopen{(} O \pv \vv{e_1} \mathclose{)}}}% mode scriptscriptstyle
+	% repère (O;i;j)
+	\newcommand*{\oij}{\mathchoice%
+		{\left( O \pv \vv{\imath} \pv \vv{\jmath} \right)}% mode displaymath
+		{\mathopen{(} O \pv \vv{\imath} \pv \vv{\jmath} \mathclose{)}}% mode textstyle
+		{\mathopen{(} O \pv \vv{\imath} \pv \vv{\jmath} \mathclose{)}}% mode scriptstyle
+		{\mathopen{(} O \pv \vv{\imath} \pv \vv{\jmath} \mathclose{)}}}% mode scriptscriptstyle
+	% repère (O;u;v)
+	\newcommand*{\ouv}{\mathchoice%
+		{\left( O \pv \vv{u} \pv \vv{v} \right)}% mode displaymath
+		{\mathopen{(} O \pv \vv{u} \pv \vv{v} \mathclose{)}}% mode textstyle
+		{\mathopen{(} O \pv \vv{u} \pv \vv{v} \mathclose{)}}% mode scriptstyle
+		{\mathopen{(} O \pv \vv{u} \pv \vv{v} \mathclose{)}}}% mode scriptscriptstyle	
+	% repère (O;e1;e2)
+		\newcommand*{\oee}{\mathchoice%
+		{\left( O \pv \vv{e_1} \pv \vv{e_2} \right)}% mode displaymath
+		{\mathopen{(} O \pv \vv{e_1} \pv \vv{e_2} \mathclose{)}}% mode textstyle
+		{\mathopen{(} O \pv \vv{e_1} \pv \vv{e_2} \mathclose{)}}% mode scriptstyle
+		{\mathopen{(} O \pv \vv{e_1} \pv \vv{e_2} \mathclose{)}}}% mode scriptscriptstyle
+	% repère (O;i;j;k)
+		\newcommand*{\oijk}{\mathchoice%
+		{\left( O \pv \vv{\vphantom{k}\imath} \pv \vv{\vphantom{k}\jmath} \pv \vv{k} \right)}
+		{\mathopen{(} \smash{O \pv \vv{\vphantom{k}\imath} \pv \vv{\vphantom{k}\jmath} \pv \vv{k}} \mathclose{)}}
+		{\mathopen{(} \smash{O \pv \vv{\vphantom{k}\imath} \pv \vv{\vphantom{k}\jmath} \pv \vv{k}} \mathclose{)}}
+		{\mathopen{(} \smash{O \pv \vv{\vphantom{k}\imath} \pv \vv{\vphantom{k}\jmath} \pv \vv{k}} \mathclose{)}}}
+	% repère (O;u;v;w)
+	\newcommand*{\ouvw}{\mathchoice%
+		{\left( O \pv \vv{u} \pv \vv{v} \pv \vv{w} \right)}% mode displaymath
+		{\mathopen{(} O \pv \vv{u} \pv \vv{v} \pv \vv{w} \mathclose{)}}% mode textstyle
+		{\mathopen{(} O \pv \vv{u} \pv \vv{v} \pv \vv{w} \mathclose{)}}% mode scriptstyle
+		{\mathopen{(} O \pv \vv{u} \pv \vv{v} \pv \vv{w} \mathclose{)}}}% mode scriptscriptstyle
+	% repère (O;e1;e2;e3)
+		\newcommand*{\oeee}{\mathchoice%
+		{\left( O \pv \vv{e_1} \pv \vv{e_2} \pv \vv{e_3} \right)}% mode displaymath
+		{\mathopen{(} O \pv \vv{e_1} \pv \vv{e_2} \pv \vv{e_3} \mathclose{)}}% mode textstyle
+		{\mathopen{(} O \pv \vv{e_1} \pv \vv{e_2} \pv \vv{e_3} \mathclose{)}}% mode scriptstyle
+		{\mathopen{(} O \pv \vv{e_1} \pv \vv{e_2} \pv \vv{e_3} \mathclose{)}}}% mode scriptscriptstyle	
+
+% Limite : Limite de f(x) lorsque x tend vers 1 par valeur inférieure : \Lim[1][x][<]{f(x)}
+\newcommandx*{\Lim}[4][1={}, 2={}, 3={}]{%
+	\ifthenelse{\equal{#2}{}}%
+	{%
+		\ensuremath{\lim_{#1} #4}%
+	}%
+	{%
+		\ifthenelse{\equal{#3}{}}%
+		{%
+			\ensuremath{\lim_{#2 \to #1} #4}%
+		}%
+		{%
+			\ifthenelse{\equal{#3}{<} \or \equal{#3}{>} \or \equal{#3}{\geqslant} \or \equal{#3}{\leqslant}}%
+			{%
+				\ensuremath{\lim_{#2 \xrightarrow{#3} #1} #4}%
+			}%
+			{%
+				\ensuremath{\lim_{\substack{#2 \to #1 \\ #3}} #4}%
+			}%
+		}%
+	}%
+}
+
+% Différence de primitives (pour les intégrales)
+\newcommand*{\intPrim}[3]{%
+	\ensuremath{\mathchoice{\left[ #1 \right]_{#2}^{#3}}%
+	{\mathopen{[} #1 \mathclose{]}_{#2}^{#3}}%
+	{\mathopen{[} #1 \mathclose{]}_{#2}^{#3}}%
+	{\mathopen{[} #1 \mathclose{]}_{#2}^{#3}}}
+}
+
+% Dérivée sous forme de fraction \derivFrac[ordre de dérivation]{expression}[variable]
+\newcommandx{\derivFrac}[3][1={1}, 3={x}]%
+{%
+	\ifthenelse{\equal{#1}{1}}%
+	{%
+		\ensuremath{\frac{\mathrm{d} #2}{\mathrm{d} #3}}%
+	}%
+	{%
+		\ensuremath{\frac{\mathrm{d}^{#1} #2}{\mathrm{d} #3^{#1}}}%
+	}%
+}
+
+% Angle de vecteurs
+\newcommand{\angleVect}[2]{%
+	\ensuremath{\mathchoice{\left( \vv{\vphantom{#2}#1} \pv \vv{\vphantom{#1}#2} \right)}%
+				{\smash{\mathopen{(} \vv{\vphantom{#2}#1} \pv \vv{\vphantom{#1}#2} \mathclose{)}}}%
+				{\smash{\mathopen{(} \vv{\vphantom{#2}#1} \pv \vv{\vphantom{#1}#2} \mathclose{)}}}%
+				{\smash{\mathopen{(} \vv{\vphantom{#2}#1} \pv \vv{\vphantom{#1}#2} \mathclose{)}}}%
+	}%
+}
+
+% Pour insérer le nom d'un vecteur du plan avec ses coordonnées : \coordVecPlan[ligne]{nom}{abscisse}{ordonnée}
+\newcommandx*{\coordVecPlan}[4][1={}]{%
+	\ifthenelse{\equal{#1}{ligne}}%
+	{\ensuremath{\vv{#2}\,\coordonneesPlan{#3}{#4}}}%
+	{\ensuremath{\vv{#2} \begin{pmatrix} #3 \\ #4 \end{pmatrix} } }%
+}
+% Variante pour les noms de vecteurs avec un indice : \coordVecPlan*[ligne]{nom}{indice}{abscisse}{ordonnée}
+\newcommandx*{\coordVecPlanIndice}[5][1={}]{%
+	\ifthenelse{\equal{#1}{ligne}}%
+	{\ensuremath{\vv*{#2}{#3}\,\coordonneesPlan{#4}{#5}}}%
+	{\ensuremath{\vv*{#2}{#3} \begin{pmatrix} #4 \\ #5 \end{pmatrix} } }%
+}
+
+% Pour insérer le nom d'un vecteur de l'espace avec ses coordonnées : \coordVecEspace[ligne]{nom}{abscisse}{ordonnée}{côte}
+\newcommandx*{\coordVecEspace}[5][1={}]{%
+	\ifthenelse{\equal{#1}{ligne}}%
+	{\ensuremath{\vv{#2}\,\coordonneesEspace{#3}{#4}{#4}}}%
+	{\ensuremath{\vv{#2} \begin{pmatrix} #3 \\ #4 \\ #5 \end{pmatrix} } }%
+}
+% Variante pour les noms de vecteurs avec un indice : \coordVecEspace[ligne]{nom}{indice}{abscisse}{ordonnée}{côte}
+\newcommandx*{\coordVecEspaceIndice}[6][1={}]{%
+	\ifthenelse{\equal{#1}{ligne}}%
+	{\ensuremath{\vv*{#2}{#3}\,\coordonneesEspace{#4}{#5}{#6}}}%
+	{\ensuremath{\vv*{#2}{#3} \begin{pmatrix} #4 \\ #5 \\ #6 \end{pmatrix} } }%
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Définitions de fonction % 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Fonction compète \declareFonction{nom}{ensemble de def}{ens. d'arrivée}{variable}{image}
+\newcommandx{\declareFonction}[5][1={}]{%
+\ifthenelse{\equal{#1}{}}%
+	{\begin{align*}%
+	#2 &\longrightarrow #3 \\%
+	#4 &\longmapsto #5 \\%
+	\end{align*}}%
+	{\begin{align*}%
+	#1 \: \colon #2 &\longrightarrow #3 \\%
+	#4 &\longmapsto #5 \\%
+	\end{align*}}%
+}
+% Fonction en ligne (ex : x |--> f(x)) \stackFonction{variable}{nom_fonction}{expression}
+\newcommandx*{\stackFonction}[3][2={}]{\ensuremath{ #1 \stackrel{#2}{\longmapsto} #3}}
+
+
+
+\endinput
