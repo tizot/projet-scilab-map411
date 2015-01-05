@@ -42,6 +42,8 @@ function [derX, derY, derT] = derivees(I1, I2)
     derT(N, N) = I2(N, N) - I1(N, N);
 endfunction
 
+// QUESTION 5
+// Calcul d'une matrice moyenne
 function Umoy = moyenneMat(U)
     [n,p] = size(U); // U a n lignes et p colonnes (on supposera n,p > 2)
     Umoy = zeros(U);
