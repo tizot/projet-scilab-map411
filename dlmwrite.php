@@ -12,12 +12,12 @@ $dimensions = getimagesize($path);
 $width = $dimensions[0];
 $height = $dimensions[1];
 
-for ($y = 1; $y <= $height; $y++) {
-    for ($x = 1; $x <= $width; $x++) {
+for ($y = 0; $y < $height; $y++) {
+    for ($x = 0; $x < $width; $x++) {
         $rgb = imagecolorat($img, $x, $y);
         echo round($rgb/256, 3);
         if ($x < $width) {
-            echo " ,";
+            echo " ";
         }
     }
     echo "\n";
