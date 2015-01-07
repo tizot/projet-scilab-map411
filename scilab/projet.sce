@@ -15,15 +15,17 @@ exec('functions.sci', -1);
 // Implémentation de la méthode de Horn et Schunk
 
 // Paramètres
-niter = 100; // nombre maximal d'itérations
-epsilon = 0.01; // erreur tolérée
-alpha = 1;
+niter = ; // nombre maximal d'itérations
+epsilon = 0.0000000000001; // erreur tolérée
+alpha = 2;
 
-I1 = RGB2Gray(ReadImage('frame10.png'));
-I2 = RGB2Gray(ReadImage('frame11.png'));
+I1 = fscanfMat("I1.txt");
+I2 = fscanfMat("I2.txt");
+
+[N, M] = size(I1)
 
 // Valeurs initiales
-err = 2*epsilon;
+err = 1;
 i = 1;
 U = zeros(I1);
 V = zeros(I1);
@@ -32,10 +34,15 @@ V = zeros(I1);
 [Ix, Iy, It] = derivees(I1, I2);
 
 while (i <= niter & err > epsilon)
-    i++;
+    i = i + 1
     [Up, Vp] = iter(U, V, Ix, Iy, It, alpha);
-    err = trace((Up-U)' * (Up-U)) + trace((Vp-V)' * (Vp-V));
+    err = trace((Up-U)' * (Up-U)) + trace((Vp-V)' * (Vp-V))
     U = Up;
     V = Vp;
 end
 
+disp(i)
+disp(err)
+
+clf()
+champ(1:N, 1:N, U, V)

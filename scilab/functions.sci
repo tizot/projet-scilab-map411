@@ -66,9 +66,10 @@ function Umoy = moyenneMat(U)
 endfunction
 
 function [Unp, Vnp] = iter(Un, Vn, Ix, Iy, It, alpha)
-    UnMoy = Umoy(Un);
-    VnMoy = Umoy(Vn);
-    frac = (Ix .* UnMoy + Iy .* VnMoy + It) ./ (alpha^2 + Ix .* Ix + Iy .* Iy);
+    UnMoy = moyenneMat(Un);
+    VnMoy = moyenneMat(Vn);
+    matAlpha2 = alpha^2 * ones(Un);
+    frac = (Ix .* UnMoy + Iy .* VnMoy + It) ./ (matAlpha2 + Ix .* Ix + Iy .* Iy);
     Unp = UnMoy - Ix .* frac;
     Vnp = VnMoy - Iy .* frac;
 endfunction
