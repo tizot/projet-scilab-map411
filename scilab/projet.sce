@@ -15,8 +15,8 @@ exec('functions.sci', -1);
 // Implémentation de la méthode de Horn et Schunk
 
 // Paramètres
-niter = 300; // nombre maximal d'itérations
-epsilon = 0.01; // erreur tolérée
+niter = 20; // nombre maximal d'itérations
+epsilon = 0.000001; // erreur tolérée
 alpha = 1;
 
 I1 = fscanfMat("I1.txt");
@@ -39,6 +39,9 @@ while (i <= niter & err > epsilon)
     err = trace((Up-U)' * (Up-U)) + trace((Vp-V)' * (Vp-V))
     U = Up;
     V = Vp;
+    //champ(1:N, 1:M, round(U*10)/10, round(V*10)/10)
+    //sleep(2000)
+    //clf()
 end
 
 disp(i)

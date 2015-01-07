@@ -67,7 +67,7 @@ function [Unp, Vnp] = iter(Un, Vn, Ix, Iy, It, alpha)
     UnMoy = moyenneMat(Un);
     VnMoy = moyenneMat(Vn);
     matAlpha2 = alpha^2 * ones(Un);
-    frac = (Ix .* UnMoy + Iy .* VnMoy + It) ./ (matAlpha2 + Ix .* Ix + Iy .* Iy);
+    frac = (Ix .* UnMoy + Iy .* VnMoy + It) .* ((matAlpha2 + Ix .* Ix + Iy .* Iy).^(-1));
     Unp = UnMoy - Ix .* frac;
     Vnp = VnMoy - Iy .* frac;
 endfunction
