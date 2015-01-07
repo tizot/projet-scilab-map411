@@ -6,8 +6,28 @@ où $\alpha$ est une constante réelle, et $I_\mu$ est la dérivée de $I$ par r
 Si $\alpha = 0$, l'énergie est nulle quel que soit le flot $h$, donc la formulation variationnelle ne nous apprend rien...
 
 \begin{enumerate}[questions]
-\item On suppose que le minimum existe dans un espace plus grand que $\mathscr{C}^2(\Omega)$. \\
-JE NE SAIS PAS COMMENT MONTRER L'UNICITE...................
+\item On suppose que le minimum $(u,v)$ existe (dans un espace plus grand que $\mathscr{C}^2(\Omega)$). \\
+On cherche un minimum dans $K = \mathscr{C}^2(\interff{0}{1}^2, \reels)$ (ou un ensemble de fonctions, ou de distributions, définies sur $\interff{0}{1}^2$), qui est un ensemble convexe. Montrons que la fonctionnelle $J$ est strictement convexe sur $K$.\\
+Soient $(u_1, v_1) \neq (u_2, v_2) \in K$ et $\lambda \in \interoo{0}{1}$.
+\begin{multline*}
+J((1-\lambda)(u_1, v_1) + \lambda(u_2, v_2)) = \\
+\int_{\Omega} \left[ \left( \left(1-\lambda\right) \left( I_x u_1 + I_y v_1 + I_t \right) + \lambda \left( I_x u_2 + I_y v_2 + I_t \right) \right)^2 \right. \\
+\left. + \alpha^2 \left( \abs{(1-\lambda)\nabla u_1 + \lambda \nabla u_2}^2 + \abs{(1-\lambda)\nabla v_1 + \lambda \nabla v_2}^2 \right) \right]
+\end{multline*}
+Or, la fonction $x \mapsto x^2$ est strictement convexe sur $\reels$, donc :
+\begin{multline*}
+\left( \left(1-\lambda\right) \left( I_x u_1 + I_y v_1 + I_t \right) + \lambda \left( I_x u_2 + I_y v_2 + I_t \right) \right)^2 \\
+< (1-\lambda)\left( I_x u_1 + I_y v_1 + I_t \right)^2 + \lambda \left( I_x u_2 + I_y v_2 + I_t \right)^2
+\end{multline*}
+De même, la fonction $x \mapsto \abs{x}^2$ est strictement convexe sur $\reels^d$ (comme somme de $d$ fonctions strictement convexes), donc :
+\[ \abs{(1-\lambda)\nabla u_1 + \lambda \nabla u_2}^2 < (1-\lambda)\abs{\nabla u_1}^2 + \lambda\abs{\nabla u_2}^2 \]
+et de même avec $v_1$ et $v_2$.\\
+N.B. --- Ces inégalités sont écrites en tout point $(x,y) \in \Omega$, omis pour alléger l'écriture.\\
+Finalement, on a:
+\[ \forall \lambda \in \interoo{0}{1}, \quad J((1-\lambda)(u_1, v_1) + \lambda(u_2, v_2)) < (1-\lambda)J(u_1, v_1) + \lambda J(u_2, v_2) \]
+ce qui traduit que $J$ est strictement convexe sur $K$.\\
+D'après la proposition 4.1.6 p. 106 du polycopié de cours, \emph{le minimum est global et unique}.
+
 
 \item On note $\bar{h} = (\bar{u}, \bar{v})$ le flot minimisant. Pour tout $u$ on a donc:
 \begin{align*}
@@ -26,4 +46,38 @@ On tient le même raisonnement en évaluant la différentielle de $J$ au point $
 I_x^2 u + I_xI_y v = \alpha^2 \Delta u - I_xI_t \label{eq:uDomin} \\
 I_xI_y u + I_y^2 v = \alpha^2 \Delta v - I_yI_t \label{eq:vDomin}
 \end{gather}
+
+\item On \og{}prolonge\fg{} les matrices $I$ à $\relatifs^2$ par le procédé suivant:
+	\[ \begin{array}{cc|ccc|cc}
+	\ddots & \vdots & \vdots & & \vdots & \vdots & \iddots \\
+	\dots & I_{11} & I_{11} & \dots & I_{1N} & I_{1N} & \dots \\ \hline
+	\dots & I_{11} & I_{11} & \dots & I_{1N} & I_{1N} & \dots \\
+	 & \vdots & \vdots & \ddots & \vdots & \vdots &  \\
+	\dots & I_{N1} & I_{N1} & \dots & I_{NN} & I_{NN} & \dots \\ \hline
+	\dots & I_{N1} & I_{N1} & \dots & I_{NN} & I_{NN} & \dots \\
+	\iddots & \vdots & \vdots & & \vdots & \vdots & \ddots
+	\end{array} \]
+Le code de la fonction se trouve dans le fichier \verb|functions.sci|, et la fonction correspondante s'appelle \verb|derivees|.
+
+\item Pour les pixels intérieurs, on utilise la formule proposée dans l'énoncé. Pour les pixels au bord et dans les coins, on pondère comme sur le schéma ci-dessous (le gros point symbolise le pixel $(i,j)$):
+	\[ 
+		\begin{array}{|c|c|c|}
+		\hline
+		1/4 & \bullet & 1/4 \\
+		\hline
+		1/8 & 1/4 & 1/8 \\
+		\hline
+		\end{array} 
+		\qquad
+		\begin{array}{|c|c|}
+		\hline
+		2/5 & \bullet \\
+		\hline
+		1/5 & 2/5 \\
+		\hline
+		\end{array}
+	\]
+De cette manière, les pixels voisins ayant un \emph{côté} en commun sont pondérés deux fois plus que ceux qui n'ont qu'un \emph{coin} en commun avec le pixel $(i,j)$.
+
+\item CALCUL DU LAPLACIEN À JUSTIFIER !!!!.....
 \end{enumerate}
