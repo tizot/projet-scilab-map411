@@ -35,9 +35,9 @@ function [derX, derY, derT] = derivees(I1, I2)
     derY(1:n-1, p) = (I1(2:n, p) - I1(1:n-1, p) + 0 + I2(2:n, p) - I2(1:n-1, p) + 0)/4;
     // derY(N, N) = 0;
     
-    derT(n, 1:p-1) = (I2(n, 1:p-1) - I1(n, 1:p-1) + I2(n, 2:p) - I1(n, 2:p))/2;
-    derT(1:n-1, p) = (I2(1:n-1, p) - I1(1:n-1, p) + I2(2:n, p) - I1(2:n, p))/2;
-    derT(n, p) = I2(n, p) - I1(n, p);
+    derT(n, 1:p-1) = (I2(n, 1:p-1) - I1(n, 1:p-1) + I2(n, 2:p) - I1(n, 2:p))/4;
+    derT(1:n-1, p) = (I2(1:n-1, p) - I1(1:n-1, p) + I2(2:n, p) - I1(2:n, p))/4;
+    derT(n, p) = (I2(n, p) - I1(n, p))/4;
 endfunction
 
 // QUESTION 5
