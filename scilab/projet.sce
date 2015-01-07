@@ -15,9 +15,9 @@ exec('functions.sci', -1);
 // Implémentation de la méthode de Horn et Schunk
 
 // Paramètres
-niter = 20; // nombre maximal d'itérations
-epsilon = 0.000001; // erreur tolérée
-alpha = 1;
+niter = 640; // nombre maximal d'itérations
+epsilon = 0.001; // erreur tolérée
+alpha = 0.01;
 
 I1 = fscanfMat("I1.txt");
 I2 = fscanfMat("I2.txt");
@@ -48,4 +48,4 @@ disp(i)
 disp(err)
 
 clf()
-champ(1:N, 1:M, U, V)
+champ(1:N/5, 1:M/5, U(1:5:N,1:5:M), V(1:5:N, 1:5:M))
