@@ -49,3 +49,5 @@ disp(err)
 
 clf()
 champ(1:N/5, 1:M/5, U(1:5:N,1:5:M), V(1:5:N, 1:5:M))
+
+G = convolKernel(2, 0.05)

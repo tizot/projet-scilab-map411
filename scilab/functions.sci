@@ -72,3 +72,49 @@ function [Unp, Vnp] = iter(Un, Vn, Ix, Iy, It, alpha)
     Unp = UnMoy - Ix .* frac;
     Vnp = VnMoy - Iy .* frac;
 endfunction
+
+function G = convolKernel(sigma, eta)
+    // Indice limite
+    ilim = ceil(sqrt(-2 * sigma^2 * log(eta)));
+    
+    G = zeros(2 * ilim + 1);
+    
+    // Remplissage de la matrice
+    for i=-ilim:ilim
+        for j=-ilim:ilim
+            G(i+ilim+1,j+ilim+1) = exp(-(i^2 + j^2)/(2 * sigma^2))/(2 * %pi * sigma^2);
+        end
+    end
+endfunction
+
+function refI = reflectMat(I, n)
+    [N, M] = size(I); // on suppose n < N,M
+    refI = zeros(N + 2*n, M + 2*n);
+    refI(n+1:N+n, n+1:M+n) = I;
+   
+    for i=1:n
+        refI(n+1-i, n+1:M+n) = I(i, :); // lignes "au-dessus"
+        refI(N+n+1+i, n+1:M+n) = I(N-i, :); // lignes "en-dessous"
+        refI(n+1:N+n, n+1-i) = I(:, i); // colonnes "à gauche"
+        refI(n+1:N+n, M+n+1+i) = I(:, M-i); // colonnes "à droite"
+    end
+endfunction
+
+function B = blur(I, sigma, eta)
+    G = convolKernel(sigma, eta);
+    
+    n = length(G(1, :));
+    refI = reflectMat(I, n);
+    
+    C = conv2(refI, G, "same");
+    
+    [N, M] = size(I);
+    B = C(n+1:N+n, n+1:M+n);
+endfunction
+
+function toGray(I)
+    [N, M] = size(I);
+    cmap = graycolormap(256);
+    grayplot(1:N, 1:M, I)
+    xset('colormap', cmap);
+endfunction
