@@ -22,7 +22,7 @@ function [derX, derY, derT] = derivees(I1, I2)
     
     // dérivées intérieures
     derX(1:n-1, 1:p-1) = (I1(1:n-1, 2:p) - I1(1:n-1, 1:p-1) + I1(2:n, 2:p) - I1(2:n, 1:p-1) + I2(1:n-1, 2:p) - I2(1:n-1, 1:p-1) + I2(2:n, 2:p) - I2(2:n, 1:p-1))/4;
-    derY(1:n-1, 1:p-1) = (I1(2:n, 1:p-1) - I1(1:n-1, 1:p-1) + I1(2:n, 2:p) - I1(1:n-1, 2:p) + I2(2:, 1:p-1) - I2(1:n-1, 1:p-1) + I2(2:n, 2:p) - I2(1:n-1, 2:p))/4;
+    derY(1:n-1, 1:p-1) = (I1(2:n, 1:p-1) - I1(1:n-1, 1:p-1) + I1(2:n, 2:p) - I1(1:n-1, 2:p) + I2(2:n, 1:p-1) - I2(1:n-1, 1:p-1) + I2(2:n, 2:p) - I2(1:n-1, 2:p))/4;
     derT(1:n-1, 1:p-1) = (I2(1:n-1, 1:p-1) - I1(1:n-1, 1:p-1) + I2(2:n, 1:p-1) - I1(2:n, 1:p-1) + I2(2:n, 2:p) - I1(2:n, 2:p) + I2(1:n-1, 2:p) - I1(1:n-1, 2:p))/4;
     
     // dérivées au bord (condition de Neumann)
