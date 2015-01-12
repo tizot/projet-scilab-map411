@@ -118,3 +118,79 @@ function toGray(I)
     grayplot(1:N, 1:M, I)
     xset('colormap', cmap);
 endfunction
+
+function [U, V] = flow(I1, I2, niter, epsilon, alpha)
+    [N, M] = size(I1)
+    
+    err = 1;
+    i = 1;
+    U = zeros(I1);
+    V = zeros(I1);
+    
+    // Dérivées de I
+    [Ix, Iy, It] = derivees(I1, I2);
+    
+    while (i <= niter & err > epsilon)
+        i = i + 1
+        [Up, Vp] = iter(U, V, Ix, Iy, It, alpha);
+        err = trace((Up-U)' * (Up-U)) + trace((Vp-V)' * (Vp-V))
+        U = Up;
+        V = Vp;
+    end
+endfunction
+
+function Im = simpleSmall(I, f)
+    [N, M] = size(I);
+    
+    Im = I(1:f:N, 1:f:M);
+endfunction
+
+function Ib = simpleBig(I, f)
+    [N, M] = size(I);
+    
+    Ml = zeros(M, M*f);
+    for i=1:M
+        for j=1:f
+            Ml(i, (i-1)*f + j) = 1;
+        end
+    end
+    
+    Mc = zeros(N*f, N);
+    for i=1:N
+        for j=1:f
+            Mc((i-1)*f + j, i) = 1;
+        end
+    end
+    
+    Ib = Mc*I*Ml;
+endfunction
+
+function HK = smartFlow(I1, I2)
+    // On floute les deux images
+    sigma = 0.8;
+    eta = 0.05;
+    I1b = blur(I1, sigma, eta);
+    I2b = blur(I2, sigma, eta);
+    
+    // On réduit les images floues
+    f = 5;
+    I1bsmall = simpleSmall(I1b, f);
+    I2bsmall = simpleSmall(I2b, f);
+    
+    // On calcule le flot
+    niter = 64; // nombre maximal d'itérations
+    epsilon = 0.001; // erreur tolérée
+    alpha = 1;
+    [hus, hvs] = flow(I1, I2, niter, epsilon, alpha);
+    
+    // On remet le flot à l'échelle originale
+    hu = simpleBig(hus, f);
+    hv = simpleBig(hvs, f);
+    
+    // On applique le flot négativement à I2 (WTF??)
+    
+    // On calcule le flot
+    
+    // On somme les deux flots
+    
+endfunction
