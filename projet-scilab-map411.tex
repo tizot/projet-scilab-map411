@@ -11,6 +11,7 @@
 
 % Police de caractères
 \usepackage{lmodern}
+\usepackage{fourier-orns}
 
 % Listes d'énumération
 \usepackage{enumitem}
@@ -27,8 +28,15 @@
 \usepackage[x11names]{xcolor}
 \usepackage{fancybox}
 
+% Images
+\usepackage{graphicx}
+
 % Francisation du document, le retour
 \usepackage[frenchb]{babel}
+
+% Subfloat
+\usepackage{caption}
+\usepackage{subcaption}
 
 % Date
 \usepackage{datetime}
@@ -36,6 +44,17 @@
 
 % Mes fonctions
 \usepackage[ensemblesGras]{mesfonctions}
+
+% Unités
+\usepackage{siunitx}
+\sisetup{%
+  unitsep = \cdot,%
+  decimalsymbol = comma,%
+  expproduct = \cdot,%
+  seperr,%
+  trapambigerr = false,%
+  alsoload = hep%
+}
 
 % Propriétés hypertexte
 \usepackage[pdftex]{hyperref}
@@ -59,13 +78,14 @@
 
 
 \begin{document}
-\renewcommand{\labelitemi}{\starredbullet}
+\setlist[itemize, 1]{label = \starredbullet}
 \setlength{\parskip}{1em}
 
 \maketitle
 
 \input{parts/section1}
 \input{parts/section2}
+\input{parts/section3}
 
 
 
