@@ -165,7 +165,19 @@ function Ib = simpleBig(I, f)
     Ib = Mc*I*Ml;
 endfunction
 
-function HK = smartFlow(I1, I2)
+function B = applyNegativeFlow(I, u, v)
+    [N, M] = size(I);
+    
+    B = zeros(I);
+    
+    for x=1:N
+        for y=1:M
+            B(min(M, max(1,x-u(x,y))), min(N, max(1, y-v(x,y)))) = I(x,y);
+        end
+    end
+endfunction
+
+function [hku, hkv] = smartFlow(I1, I2)
     // On floute les deux images
     sigma = 0.8;
     eta = 0.05;
@@ -177,20 +189,30 @@ function HK = smartFlow(I1, I2)
     I1bsmall = simpleSmall(I1b, f);
     I2bsmall = simpleSmall(I2b, f);
     
+    disp(size(I1bsmall))
+    
     // On calcule le flot
     niter = 64; // nombre maximal d'itérations
     epsilon = 0.001; // erreur tolérée
     alpha = 1;
-    [hus, hvs] = flow(I1, I2, niter, epsilon, alpha);
+    [hus, hvs] = flow(I1bsmall, I2bsmall, niter, epsilon, alpha);
     
     // On remet le flot à l'échelle originale
     hu = simpleBig(hus, f);
     hv = simpleBig(hvs, f);
     
+    disp(size(hu))
+    
     // On applique le flot négativement à I2 (WTF??)
+    I2closer = applyNegativeFlow(I2, hu, hv);
     
     // On calcule le flot
+    [ku, kv] = flow(I1, I2closer, niter, epsilon, alpha);
+    
+    disp(size(ku))
     
     // On somme les deux flots
+    hku = hu + ku;
+    hkv = hv + kv;
     
 endfunction

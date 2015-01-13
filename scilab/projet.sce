@@ -33,17 +33,17 @@ I2 = fscanfMat("I2.txt");
 
 [U, V] = flow(I1, I2, niter, epsilon, alpha)
 clf()
-champ(1:N/5, 1:M/5, U(1:5:N,1:5:M), V(1:5:N, 1:5:M), arfact=0.1) // , arfact=0.1)
+champ(1:N/5, 1:M/5, U(1:5:N,1:5:M), V(1:5:N, 1:5:M)) // , arfact=0.1)
 sleep(4000)
 
-I1 = blur(I1, 2, 0.05)
-I2 = blur(I2, 2, 0.05)
+// I1 = blur(I1, 2, 0.05)
+// I2 = blur(I2, 2, 0.05)
 
-// Dérivées de I
-[U, V] = flow(I1, I2, niter, epsilon, alpha)
+// [U, V] = flow(I1, I2, niter, epsilon, alpha)
 
+[U, V] = smartFlow(I1, I2)
 clf()
-champ(1:N/5, 1:M/5, U(1:5:N,1:5:M), V(1:5:N, 1:5:M), arfact=0.1)
+champ(1:N/5, 1:M/5, U(1:5:N,1:5:M), V(1:5:N, 1:5:M))
 
 //G = convolKernel(2, 0.05)
 
