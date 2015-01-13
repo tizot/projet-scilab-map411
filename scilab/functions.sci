@@ -100,25 +100,6 @@ function refI = reflectMat(I, n)
     end
 endfunction
 
-function B = blur(I, sigma, eta)
-    G = convolKernel(sigma, eta);
-    
-    n = length(G(1, :));
-    refI = reflectMat(I, n);
-    
-    C = conv2(refI, G, "same");
-    
-    [N, M] = size(I);
-    B = C(n+1:N+n, n+1:M+n);
-endfunction
-
-function toGray(I)
-    [N, M] = size(I);
-    cmap = graycolormap(256);
-    grayplot(1:N, 1:M, I)
-    xset('colormap', cmap);
-endfunction
-
 function [U, V] = flow(I1, I2, niter, epsilon, alpha)
     [N, M] = size(I1)
     
@@ -137,6 +118,25 @@ function [U, V] = flow(I1, I2, niter, epsilon, alpha)
         U = Up;
         V = Vp;
     end
+endfunction
+
+function B = blur(I, sigma, eta)
+    G = convolKernel(sigma, eta);
+    
+    n = length(G(1, :));
+    refI = reflectMat(I, n);
+    
+    C = conv2(refI, G, "same");
+    
+    [N, M] = size(I);
+    B = C(n+1:N+n, n+1:M+n);
+endfunction
+
+function toGray(I)
+    [N, M] = size(I);
+    cmap = graycolormap(256);
+    grayplot(1:N, 1:M, I)
+    xset('colormap', cmap);
 endfunction
 
 function Im = simpleSmall(I, f)
@@ -165,7 +165,19 @@ function Ib = simpleBig(I, f)
     Ib = Mc*I*Ml;
 endfunction
 
-function HK = smartFlow(I1, I2)
+function B = applyNegativeFlow(I, u, v)
+    [N, M] = size(I);
+    
+    B = I;
+    
+    for x=1:N
+        for y=1:M
+            B(min(M, max(1,x-u(x,y))), min(N, max(1, y-v(x,y)))) = I(x,y);
+        end
+    end
+endfunction
+
+function [hku, hkv] = smartFlow(I1, I2)
     // On floute les deux images
     sigma = 0.8;
     eta = 0.05;
@@ -173,24 +185,28 @@ function HK = smartFlow(I1, I2)
     I2b = blur(I2, sigma, eta);
     
     // On réduit les images floues
-    f = 5;
+    f = 4;
     I1bsmall = simpleSmall(I1b, f);
     I2bsmall = simpleSmall(I2b, f);
     
     // On calcule le flot
-    niter = 64; // nombre maximal d'itérations
+    niter = 256; // nombre maximal d'itérations
     epsilon = 0.001; // erreur tolérée
-    alpha = 1;
-    [hus, hvs] = flow(I1, I2, niter, epsilon, alpha);
+    alpha = 0.1;
+    [hus, hvs] = flow(I1bsmall, I2bsmall, niter, epsilon, alpha);
     
     // On remet le flot à l'échelle originale
-    hu = simpleBig(hus, f);
-    hv = simpleBig(hvs, f);
+    hu = f.*simpleBig(hus, f);
+    hv = f.*simpleBig(hvs, f);
     
-    // On applique le flot négativement à I2 (WTF??)
+    // On applique le flot négativement à I2
+    I2closer = applyNegativeFlow(I2, hu, hv);
     
     // On calcule le flot
+    [ku, kv] = flow(I1, I2closer, niter, epsilon, alpha);
     
     // On somme les deux flots
+    hku = hu + ku;
+    hkv = hv + kv;
     
 endfunction
