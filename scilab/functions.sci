@@ -69,7 +69,7 @@ endfunction
 
 // Retourne une matrice dont les valeurs sont celles d'un gaussienne
 // centrée en (hauteur(G)/2, largeur(G)/2)
-// de paramètres sigma et eta
+// de paramètre sigma et dont les valeurs <= eta sont mises à 0
 function G = convolKernel(sigma, eta)
     // Indice limite
     ilim = ceil(sqrt(-2 * sigma^2 * log(eta)));
@@ -100,7 +100,7 @@ endfunction
 
 // Calcul le flot optique
 // I1, I2 : les deux images
-// niter : le nombre d'itérations, epsilon : l'erreur limite
+// niter : le nombre d'itérations maximal, epsilon : l'erreur limite
 // Retourne [U, V] : U étant le flot selon x, V le flot selon y
 function [U, V] = flow(I1, I2, niter, epsilon, alpha)
     [N, M] = size(I1)
