@@ -50,10 +50,41 @@ On peut voir quelques exemples sur des images ci-dessous:
   \includegraphics[width=\textwidth]{img/grove-blur-8.png}
   \caption{Flou avec $\sigma = 8$}
   \end{subfigure}
-\caption{Quelques illustrations du lissage gaussien.}
 \end{figure}
 \end{enumerate}
 
 \begin{enumerate}[questions, start=13]
-\item Il faut mettre les deux couples d'images. Trop tard ce soir... :p
+\item On travaille avec l'image suivante et sa version lissée. On applique l'algorithme de la question 7. 
+\begin{figure}[!h]
+\centering
+\includegraphics[width=.45\textwidth, height=6cm]{img/teddy-noblur} \hfill
+\includegraphics[width=.45\textwidth]{img/teddy-blur-4}\\
+\bigskip
+\includegraphics[width=.45\textwidth, height=6cm]{img/q13-result-1} \hfill
+\includegraphics[width=.45\textwidth, height=6cm]{img/q13-result-2}
+\end{figure}
+
+On constate que le lissage permet d'avoir un flot optique mieux déterminé dans les régions moins contrastées. En revanche, on perd de l'information sur l'image au niveau des zones des contrastées. Par exemple, le mouvement de la cheminée que l'on peut observer sur le résultat de gauche n'est plus visible sur celui de droite.
+
+\item On implémente l'algorithme, dans le fichier \verb|functions.sci|, en plusieurs fonctions qui seront appelées par une fonction globale:
+  \begin{itemize}
+  \item \verb|simpleSmall(I,f)| réduit la taille d'une matrice d'un facteur \verb|f|;
+  \item \verb|simpleBig(I,f)| agrandit la taille d'une matrice d'un facteur \verb|f|;
+  \item \verb|applyNegativeFlow(I,u,v)| retranche le flot $(u,v)$ à la matrice $I$;
+  \item \verb|smartFlow(I1, I2)| calcule le flot optique entre les deux images de la façon décrite dans l'énoncé.
+  \end{itemize}
+On a testé ce programme sur la même image que précédemment. Le résultat est visible sur la figure \vref{fig:q14-results}.
+\begin{figure}
+\centering
+  \begin{subfigure}{.6\textwidth}
+  \includegraphics[width=\textwidth]{img/q14-results}
+  \caption{Résultat global.}
+  \end{subfigure} \\
+  \begin{subfigure}{.6\textwidth}
+  \includegraphics[width=\textwidth]{img/q14-results-zoom}
+  \caption{Zoom sur une partie de la matrice.}
+  \end{subfigure}
+\caption{Résultats de la question 14.\label{fig:q14-results}}
+\end{figure}
+On remarque que le flot est plus régulier que dans les questions 7 ou 13, et la partie agrandie nous montre que les zones où l'intensité est quasi-constante sont bien traitées dans le sens où le flot est constant et non \og{}chaotique\fg{} comparé aux résultats des questions précédentes.
 \end{enumerate}
