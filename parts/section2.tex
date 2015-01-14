@@ -59,25 +59,18 @@ I_xI_y u + I_y^2 v = \alpha^2 \Delta v - I_yI_t \label{eq:vDomin}
 	\end{array} \]
 Le code de la fonction se trouve dans le fichier \verb|functions.sci|, et la fonction correspondante s'appelle \verb|derivees|.
 
-\item Pour les pixels intérieurs, on utilise la formule proposée dans l'énoncé. Pour les pixels au bord et dans les coins, on pondère comme sur le schéma ci-dessous (le gros point symbolise le pixel $(i,j)$):
-	\[ 
-		\begin{array}{|c|c|c|}
-		\hline
-		1/4 & \bullet & 1/4 \\
-		\hline
-		1/8 & 1/4 & 1/8 \\
-		\hline
-		\end{array} 
-		\qquad
-		\begin{array}{|c|c|}
-		\hline
-		2/5 & \bullet \\
-		\hline
-		1/5 & 2/5 \\
-		\hline
-		\end{array}
-	\]
-De cette manière, les pixels voisins ayant un \emph{côté} en commun sont pondérés deux fois plus que ceux qui n'ont qu'un \emph{coin} en commun avec le pixel $(i,j)$.
+\item Pour calculer la moyennée de la matrice $U$, on la prolonge d'abord sur ses quatre \og{}côtés\fg{} comme ceci:
+	\[ \begin{array}{|c|ccc|c|}
+	\hline
+	U_{11} & U_{11} & \dots & U_{1N} & U_{1N} \\ \hline
+	U_{11} & U_{11} & \dots & U_{1N} & U_{1N} \\
+	\vdots & \vdots & \ddots & \vdots & \vdots \\
+	U_{N1} & U_{N1} & \dots & U_{NN} & U_{NN} \\ \hline
+	U_{N1} & U_{N1} & \dots & U_{NN} & U_{NN} \\ \hline
+	\end{array} \]
+On applique alors la formule proposée dans l'énoncé à cette nouvelle matrice notée $\tilde{U}$. Enfin, on extrait la sous-matrice (\og{}notation Scilab\fg{}):
+\[ \bar{U} = \tilde{U}_{2:N+1, 2:N+1} \]
+L'implémentation est faite dans la fonction \verb|moyenneMat| du fichier \verb|functions.sci|.
 
 \item Afin de résoudre numériquement les équations \vref{eq:uDomin} et \vref{eq:vDomin}, on approche le laplacien par une fonction plus simple.
 
@@ -89,8 +82,8 @@ Par définition, on a:
 On écrit dorénavant $u$ au point $(i,j)$:
 \begin{multline*}
 \bar{u} = \dfrac{1}{6} \left( u - \partial_xu + \frac{1}{2}\partial^2_{xx}u + u + \partial_xu + \frac{1}{2}\partial^2_{xx}u + u + \partial_yu + \frac{1}{2}\partial^2_{yy}u + u - \partial_yu + \frac{1}{2}\partial^2_{yy}u \right) \\
-+ \dfrac{1}{12} \left( u - \partial_xu - \partial_yu + \frac{1}{2}\partial^2_{xx}u + \partial^2_{xy}u + \frac{1}{2}\partial^2_{yy}u + u - \partial_xu + \partial_yu + \frac{1}{2}\partial^2_{xx}u - \partial^2_{xy}u + \frac{1}{2}\partial^2_{yy}u \right. \\
-\left. + u + \partial_xu - \partial_yu + \frac{1}{2}\partial^2_{xx}u - \partial^2_{xy}u + \frac{1}{2}\partial^2_{yy}u + u + \partial_xu + \partial_yu + \frac{1}{2}\partial^2_{xx}u + \partial^2_{xy}u + \frac{1}{2}\partial^2_{yy}u \right)
++ \dfrac{1}{12} \left( u - \partial_xu - \partial_yu + \frac{1}{2}\partial^2_{xx}u + \partial^2_{xy}u + \frac{1}{2}\partial^2_{yy}u + \dots \right. \\
+\left. + \dots + u + \partial_xu + \partial_yu + \frac{1}{2}\partial^2_{xx}u + \partial^2_{xy}u + \frac{1}{2}\partial^2_{yy}u \right)
 \end{multline*}
 d'où, après simplification:
 \[ \bar{u} = u + \dfrac{1}{3}\Delta u \iff \Delta u = 3(\bar{u} - u) \]
@@ -108,12 +101,18 @@ I_xI_yu + (I_y^2 + \alpha^2)v = \alpha^2\bar{v} - I_yI_t
 \end{cases*}
 \]
 
-\item On implémente l'algorithme dans le fichier \verb|functions.sci|, avec la fonction \verb|flow(I1, I2, niter, epsilon, alpha)| qui prend en entrée les matrices des images et affiche le flot calculé dans un graphique. On l'a testée avec les images ci-dessous.
+\item On implémente l'algorithme dans le fichier \verb|functions.sci|, avec la fonction \verb|flow| qui prend en entrée les matrices des images et affiche le flot calculé dans un graphique. On l'a testée avec les images ci-dessous.
 \begin{figure*}[!h]
 \centering
-\includegraphics[width=.45\textwidth]{img/q7-img-1}
+\includegraphics[width=.45\textwidth]{img/q7-orig-1}
 \hfill
-\includegraphics[width=.45\textwidth]{img/q7-img-2}
+\includegraphics[width=.45\textwidth]{img/q7-orig-2}
 \end{figure*}
-On voit que les zones présentant de fortes discontinuités de luminosité sont bien traitées : le flot est bien défini en direction, et il est distribué de façon homogène. En revanche, dans les zones uniformes, le flot est erratique et ne permet de conclure quant au mouvement des points matériels représentés.
+
+On voit que les zones présentant de fortes discontinuités de luminosité sont bien traitées : le flot est bien défini en direction, et il est distribué de façon homogène. En revanche, dans les zones uniformes, le flot est erratique et ne permet de conclure quant au mouvement des points matériels représentés (cf.~figure~\vref{fig:q7-results}).
+\begin{figure}
+\centering
+\includegraphics[width=.7\textwidth]{img/q7-results}
+\caption{Résultat de la question 7.\label{fig:q7-results}}
+\end{figure}
 \end{enumerate}
