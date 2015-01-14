@@ -16,7 +16,8 @@ function [derX, derY, derT] = derivees(I1, I2)
         error("Les matrices ne sont pas de même dimension.")
     end
     
-    derX = zeros(I1); // initialisation du résultat
+    // initialisation du résultat
+    derX = zeros(I1);
     derY = zeros(I1);
     derT = zeros(I1);
     
@@ -26,14 +27,9 @@ function [derX, derY, derT] = derivees(I1, I2)
     derT(1:n-1, 1:p-1) = (I2(1:n-1, 1:p-1) - I1(1:n-1, 1:p-1) + I2(2:n, 1:p-1) - I1(2:n, 1:p-1) + I2(2:n, 2:p) - I1(2:n, 2:p) + I2(1:n-1, 2:p) - I1(1:n-1, 2:p))/4;
     
     // dérivées au bord (condition de Neumann)
-    // à vérifier
     derX(n, 1:p-1) = (I1(n, 2:p) - I1(n, 1:p-1) + 0 + I2(n, 2:p) - I2(n, 1:p-1) + 0)/4;
-    // derX(1:N-1, N) = (0 + 0 + 0 + 0)/4;
-    // derX(N, N) = 0;
     
-    // derY(N, 1:N-1) = (0 + 0 + 0 + 0)/4;
     derY(1:n-1, p) = (I1(2:n, p) - I1(1:n-1, p) + 0 + I2(2:n, p) - I2(1:n-1, p) + 0)/4;
-    // derY(N, N) = 0;
     
     derT(n, 1:p-1) = (I2(n, 1:p-1) - I1(n, 1:p-1) + I2(n, 2:p) - I1(n, 2:p))/4;
     derT(1:n-1, p) = (I2(1:n-1, p) - I1(1:n-1, p) + I2(2:n, p) - I1(2:n, p))/4;
@@ -73,6 +69,9 @@ function [Unp, Vnp] = iter(Un, Vn, Ix, Iy, It, alpha)
     Vnp = VnMoy - Iy .* frac;
 endfunction
 
+// Retourne une matrice dont les valeurs sont celles d'un gaussienne
+// centrée en (hauteur(G)/2, largeur(G)/2)
+// de paramètres sigma et eta
 function G = convolKernel(sigma, eta)
     // Indice limite
     ilim = ceil(sqrt(-2 * sigma^2 * log(eta)));
@@ -87,6 +86,7 @@ function G = convolKernel(sigma, eta)
     end
 endfunction
 
+// Étend une matrice I avec "conditions aux bords de réflexion" 
 function refI = reflectMat(I, n)
     [N, M] = size(I); // on suppose n < N,M
     refI = zeros(N + 2*n, M + 2*n);
@@ -100,6 +100,10 @@ function refI = reflectMat(I, n)
     end
 endfunction
 
+// Calcul le flot optique
+// I1, I2 : les deux images
+// niter : le nombre d'itérations, epsilon : l'erreur limite
+// Retourne [U, V] : U étant le flot selon x, V le flot selon y
 function [U, V] = flow(I1, I2, niter, epsilon, alpha)
     [N, M] = size(I1)
     
@@ -120,6 +124,8 @@ function [U, V] = flow(I1, I2, niter, epsilon, alpha)
     end
 endfunction
 
+// Floute une image I avec un noyau de convolution gaussien
+// sigma, eta : paramètres de la gaussienne
 function B = blur(I, sigma, eta)
     G = convolKernel(sigma, eta);
     
@@ -132,6 +138,7 @@ function B = blur(I, sigma, eta)
     B = C(n+1:N+n, n+1:M+n);
 endfunction
 
+// Affiche une image I
 function toGray(I)
     [N, M] = size(I);
     cmap = graycolormap(256);
@@ -139,12 +146,16 @@ function toGray(I)
     xset('colormap', cmap);
 endfunction
 
+// Retourne la matrice I réduite d'un facteur f
+// (hauteur/f, largeur/f)
 function Im = simpleSmall(I, f)
     [N, M] = size(I);
     
     Im = I(1:f:N, 1:f:M);
 endfunction
 
+// Retourne la matrice I agrandie d'un facteur f
+// On remplace simplement chaque pixel par f^2 pixels
 function Ib = simpleBig(I, f)
     [N, M] = size(I);
     
@@ -165,6 +176,7 @@ function Ib = simpleBig(I, f)
     Ib = Mc*I*Ml;
 endfunction
 
+// Applique le flot (u,v) à la matrice I
 function B = applyNegativeFlow(I, u, v)
     [N, M] = size(I);
     
@@ -177,6 +189,7 @@ function B = applyNegativeFlow(I, u, v)
     end
 endfunction
 
+// Question 14)
 function [hku, hkv] = smartFlow(I1, I2)
     // On floute les deux images
     sigma = 0.8;
