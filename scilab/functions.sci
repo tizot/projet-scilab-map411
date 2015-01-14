@@ -40,24 +40,22 @@ endfunction
 // Calcul d'une matrice moyenne
 function Umoy = moyenneMat(U)
     [n,p] = size(U); // U a n lignes et p colonnes (on supposera n,p > 2)
+    Umoyt = zeros(n+2, p+2);
     Umoy = zeros(U);
     
-    // on pondère les éléments qui ont un côté en commun 2 fois plus que les éléments qui n'ont qu'un coin en commun
-    // éléments intérieurs
-    Umoy(2:n-1, 2:p-1) = 1/6 * (U(1:n-2, 2:p-1) + U(3:n, 2:p-1) + U(2:n-1, 3:p) + U(2:n-1, 1:p-2)) + 1/12 * (U(1:n-2, 1:p-2) + U(1:n-2, 3:p) + U(3:n, 1:p-2) + U(3:n, 3:p));
+    // On prolonge U
+    Umoyt(2:n+1, 2:p+1) = U;
+    Umoyt(1, 2:p+1) = U(1, 1:p);
+    Umoyt(n+2, 2:p+1) = U(n, 1:p);
+    Umoyt(2:n+1, 1) = U(1:n, 1);
+    Umoyt(2:n+1, p+2) = U(1:n, p);
+    Umoyt(1,1) = U(1,1);
+    Umoyt(1,p+2) = U(1,p);
+    Umoyt(n+2,1) = U(n,1);
+    Umoyt(n+2,p+2) = U(n,p);
     
-    // éléments aux bords
-    Umoy(1, 2:p-1) = 1/6 * (U(1, 1:p-2) + U(1, 3:p) + U(2, 2:p-1) + U(1, 2:p-1)) + 1/12 * (U(2, 1:p-2) + U(2, 3:p) + U(1, 1:p-2) + U(1, 3:p)); // ligne 1
-    Umoy(n, 2:p-1) = 1/6 * (U(n, 1:p-2) + U(n, 3:p) + U(n-1, 2:p-1) + U(n, 2:p-1)) + 1/12 * (U(n-1, 1:p-2) + U(n-1, 3:p) + U(n, 1:p-2) + U(n, 3:p)); // ligne n
-    Umoy(2:n-1, 1) = 1/6 * (U(1:n-2, 1) + U(3:n, 1) + U(2:n-1, 2) + U(2:n-1, 1)) + 1/12 * (U(1:n-2, 2) + U(3:n, 2) + U(1:n-2, 1) + U(3:n, 1)); // colonne 1
-    Umoy(2:n-1, p) = 1/6 * (U(1:n-2, p) + U(3:n, p) + U(2:n-1, p-1) + U(2:n-1, p)) + 1/12 * (U(1:n-2, p-1) + U(3:n, p-1) + U(1:n-2, p) + U(3:n, p)); // colonne p
-    
-    // éléments aux coins
-    // A CHANGER - TODO
-    Umoy(1, 1) = 2/5 * (U(1, 2) + U(2, 1)) + 1/5 * U(2, 2);
-    Umoy(1, p) = 2/5 * (U(1, p-1) + U(2, p)) + 1/5 * U(2, p-1);
-    Umoy(n, 1) = 2/5 * (U(n-1, 1) + U(n, 2)) + 1/5 * U(n-1, 2);
-    Umoy(n, p) = 2/5 * (U(n-1, p) + U(n, p-1)) + 1/5 * U(n-1, p-1);
+    // On calcule la moyenne
+    Umoy(1:n, 1:p) = 1/6 * (Umoyt(1:n, 2:p+1) + Umoyt(3:n+2, 2:p+1) + Umoyt(2:n+1, 1:p) + Umoyt(2:n+1, 3:p+2)) + 1/12 * (Umoyt(1:n, 1:p) + Umoyt(1:n, 3:p+2) + Umoyt(3:n+2, 1:p) + Umoyt(3:n+2, 3:p+2))
 endfunction
 
 function [Unp, Vnp] = iter(Un, Vn, Ix, Iy, It, alpha)
